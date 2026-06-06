@@ -32,7 +32,7 @@ public class UserCommandController {
     @Operation(summary = "Authenticate a User and get JWT Token in Cookie")
     public ResponseEntity<AuthApiResponse> login(
             @RequestBody LoginReq req,
-            HttpServletResponse response) { // <-- Added HttpServletResponse here
+            HttpServletResponse response) { 
 
         // 1. Get the response from your service
         AuthApiResponse apiResponse = commandService.loginUser(req);

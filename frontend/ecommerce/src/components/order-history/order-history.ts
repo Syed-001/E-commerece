@@ -14,7 +14,7 @@ export class OrderHistory implements OnInit {
   orders: Order[] = [];
   errorMessage: string = '';
   
-  userId: string = sessionStorage.getItem('userId') || '';
+  userId: string = ''; 
 
   constructor(
     private orderService: OrderService,
@@ -22,6 +22,11 @@ export class OrderHistory implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
+    if (typeof sessionStorage !== 'undefined') {
+      this.userId = sessionStorage.getItem('userId') || '';
+    }
+
     if (!this.userId) {
       this.router.navigate(['/login']);
       return;

@@ -6,19 +6,23 @@ import { CartService } from '../../../services/cart';
 
 @Component({
   selector: 'app-customer-cart',
-  imports: [ CommonModule ],
+  imports: [CommonModule, RouterLink],
   templateUrl: './customer-cart.html',
   styleUrl: './customer-cart.css',
 })
 export class CustomerCart implements OnInit {
-  cartItems: CartItem[] = [];
-  cartTotal: number = 0;
-  
-  userId: string = sessionStorage.getItem('userId') || 'waris123';
 
-  constructor(private cartService: CartService) {}
+  cartTotal: number = 0;
+
+  userId: string = '';
+  cartItems: CartItem[] = [];
+
+  constructor(private cartService: CartService) { }
 
   ngOnInit(): void {
+    if (typeof sessionStorage !== 'undefined') {
+      this.userId = sessionStorage.getItem('userId') || '';
+    }
     this.loadCart();
   }
 
@@ -26,8 +30,8 @@ export class CustomerCart implements OnInit {
     this.cartService.getCartByUserId(this.userId).subscribe({
       next: (items) => {
         this.cartItems = items;
-        this.calculateTotal(); 
-        
+        this.calculateTotal();
+
 
         this.cartService.updateCartCount(this.cartItems.length);
       },
@@ -39,10 +43,10 @@ export class CustomerCart implements OnInit {
     this.cartTotal = this.cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   }
 
- 
+
   updateQuantity(item: CartItem, newQuantity: number) {
-    if (newQuantity < 1) return; 
-    
+    if (newQuantity < 1) return;
+
     const request = {
       userId: this.userId,
       productId: item.productId,
@@ -56,9 +60,9 @@ export class CustomerCart implements OnInit {
   }
 
   removeItem(cartId: number) {
-    if(confirm('Are you sure you want to remove this item?')) {
+    if (confirm('Are you sure you want to remove this item?')) {
       this.cartService.deleteCartItem(cartId).subscribe({
-        next: () => this.loadCart(), 
+        next: () => this.loadCart(),
         error: (err) => console.error('Error removing item', err)
       });
     }

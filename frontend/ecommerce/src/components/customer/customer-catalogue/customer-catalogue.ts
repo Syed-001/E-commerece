@@ -37,7 +37,15 @@ export class CustomerCatalogue implements OnInit {
   }
 
   addToCart(product: Product) {
-    const currentUserId = sessionStorage.getItem('userId') || 'john123';
+    let currentUserId = '';
+    if (typeof sessionStorage !== 'undefined') {
+      currentUserId = sessionStorage.getItem('userId') || '';
+    }
+
+    if (!currentUserId) {
+      alert("Please login to add items to your cart.");
+      return; 
+    }
 
     const request = {
       userId: currentUserId,

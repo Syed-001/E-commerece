@@ -9,11 +9,15 @@ import com.wipro.productservice.dto.OrderItemDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
+	
+	@Autowired
+	private KafkaTemplate<String, OrderEventDto> kafkaTemplate;
 
     @Autowired
     private ProductRepository repo;
@@ -62,14 +66,25 @@ public class ProductServiceImpl implements ProductService {
 
     @KafkaListener(topics = "order-placed-topic", groupId = "product-group")
     public void handleOrderPlaced(OrderEventDto event) {
-        System.out.println("Deducting inventory for Order ID: " + event.getOrderId());
-        
-        for (OrderItemDto item : event.getItems()) {
-            Product product = repo.findById(item.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+        try {
+            System.out.println("Deducting inventory for Order ID: " + event.getOrderId());
             
-            product.setAvailableQty(product.getAvailableQty() - item.getQuantity());
-            repo.save(product);
+            for (OrderItemDto item : event.getItems()) {
+                Product product = repo.findById(item.getProductId())
+                        .orElseThrow(() -> new RuntimeException("Product not found"));
+                
+                if(product.getAvailableQty() < item.getQuantity()) {
+                    throw new RuntimeException("Not enough stock in database");
+                }
+                
+                product.setAvailableQty(product.getAvailableQty() - item.getQuantity());
+                repo.save(product);
+            }
+            // Optional: Send to 'inventory-success-topic' to update order to COMPLETED
+        } catch (Exception e) {
+            System.err.println("Inventory deduction failed: " + e.getMessage());
+            // SAGA ROLLBACK: Tell Order Service to cancel the order!
+            kafkaTemplate.send("inventory-failed-topic", event);
         }
     }
 

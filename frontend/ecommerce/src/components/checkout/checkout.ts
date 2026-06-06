@@ -18,8 +18,7 @@ export class Checkout implements OnInit {
   isProcessing: boolean = false;
   successMessage: string = '';
   errorMessage: string = '';
-
-  userId: string = sessionStorage.getItem('userId') || ''; 
+  userId: string = ''; 
 
   constructor(
     private cartService: CartService,
@@ -28,11 +27,17 @@ export class Checkout implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (typeof sessionStorage !== 'undefined') {
+      this.userId = sessionStorage.getItem('userId') || ''; 
+    }
+
+  
     if (!this.userId) {
       this.router.navigate(['/login']);
       return;
     }
-    this.loadCheckoutData();
+    
+    this.loadCheckoutData(); 
   }
 
   loadCheckoutData() {

@@ -27,7 +27,8 @@ public class AppSecurity {
                 .requestMatchers(
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
-                    "/actuator/**"                 
+                    "/actuator/**",
+                    "/product/id/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

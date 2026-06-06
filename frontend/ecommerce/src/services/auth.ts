@@ -27,6 +27,7 @@ export class AuthService {
     if (typeof sessionStorage !== 'undefined') {
       sessionStorage.setItem('userType', userType.toString());
       sessionStorage.setItem('username', username);  
+      sessionStorage.setItem('userId', username);
     }
   }
 
