@@ -11,11 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/user/command")
 @Tag(name = "User Command API", description = "Endpoints for Auth and Modifying Users")
 public class UserCommandController {
-    @Autowired private UserCommandService commandService;
+    
+    @Autowired 
+    private UserCommandService commandService;
 
     @PostMapping("/register")
     @Operation(summary = "Register a new User")
@@ -24,9 +29,34 @@ public class UserCommandController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Authenticate a User and get JWT Token")
-    public ResponseEntity<AuthApiResponse> login(@RequestBody LoginReq req) {
-        return ResponseEntity.ok(commandService.loginUser(req));
+    @Operation(summary = "Authenticate a User and get JWT Token in Cookie")
+    public ResponseEntity<AuthApiResponse> login(
+            @RequestBody LoginReq req,
+            HttpServletResponse response) { // <-- Added HttpServletResponse here
+
+        // 1. Get the response from your service
+        AuthApiResponse apiResponse = commandService.loginUser(req);
+
+        // 2. Check if login was successful and a token was generated
+        if (apiResponse.getToken() != null && !apiResponse.getToken().isEmpty()) {
+            
+            // 3. Create the HttpOnly Cookie EXACTLY like your reference
+            Cookie cookie = new Cookie("jwt", apiResponse.getToken());
+            cookie.setHttpOnly(true);
+            cookie.setSecure(false); // Change to true if using HTTPS in production
+            cookie.setPath("/");
+            cookie.setMaxAge(10 * 60 * 60); // 10 hours (matching your JwtUtil expiration)
+
+            // 4. Add the cookie to the HTTP response
+            response.addCookie(cookie);
+
+            // 5. IMPORTANT: Remove token from the JSON body so it ONLY lives securely in the cookie
+            apiResponse.setToken(null);
+        } else {
+            apiResponse.setMessage("Login Failed");
+        }
+
+        return ResponseEntity.ok(apiResponse);
     }
 
     @PutMapping("/{id}")
