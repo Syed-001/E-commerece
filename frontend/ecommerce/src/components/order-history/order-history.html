@@ -1,0 +1,40 @@
+<div class="page-container">
+  <h2 class="mb-4">My Order History</h2>
+
+  @if (errorMessage) { <div class="alert alert-danger">{{ errorMessage }}</div> }
+
+  @if (orders.length === 0 && !errorMessage) {
+    <div class="alert alert-info empty-state">You haven't placed any orders yet. Start shopping!</div>
+  }
+
+  @for (order of orders; track order.orderId) {
+    <div class="order-card custom-card">
+      <div class="order-header">
+        <div class="order-details">
+          <span class="label">Order ID:</span> 
+          <span class="value">#{{ order.orderId }}</span>
+          <span class="divider">|</span>
+          <span class="label">Status:</span>
+          <span class="badge" 
+                [ngClass]="{
+                  'bg-warning text-dark': order.orderStatus === 'PENDING', 
+                  'bg-success': order.orderStatus === 'COMPLETED',
+                  'bg-primary': order.orderStatus === 'PROCESSING'
+                }">
+            {{ order.orderStatus }}
+          </span>
+        </div>
+        <h4 class="order-total">₹{{ order.totalAmount }}</h4>
+      </div>
+
+      <ul class="item-list">
+        @for (item of order.items; track item.productId) {
+          <li class="item-row">
+            <h6 class="item-name">{{ item.productName ? item.productName : 'Product ID: ' + item.productId }}</h6>
+            <div class="item-qty">Qty: <span>{{ item.quantity }}</span></div>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</div>

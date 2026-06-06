@@ -1,0 +1,57 @@
+<div class="page-container">
+  <h2>My Shopping Cart</h2>
+
+  @if (cartItems.length === 0) {
+    <div class="alert alert-info empty-cart">
+      Your cart is empty. <a routerLink="/customer/catalogue">Continue shopping</a>.
+    </div>
+  } @else {
+    <div class="row mt-4">
+      <div class="col-lg-8">
+        @for (item of cartItems; track item.cartId) {
+          <div class="custom-card mb-3">
+            <div class="cart-item-body">
+              <div>
+                <h5>{{ item.productName }}</h5>
+                <p class="text-muted">Price: ₹{{ item.price }}</p>
+              </div>
+              
+              <div class="quantity-controls">
+                <button class="btn btn-sm btn-light" (click)="updateQuantity(item, item.quantity - 1)">-</button>
+                <span class="quantity-number">{{ item.quantity }}</span>
+                <button class="btn btn-sm btn-light" (click)="updateQuantity(item, item.quantity + 1)">+</button>
+              </div>
+
+              <div class="item-actions">
+                <h6 class="item-subtotal">₹{{ item.price * item.quantity }}</h6>
+                <button class="btn btn-sm btn-danger mt-1" (click)="removeItem(item.cartId)">Remove</button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="col-lg-4">
+        <div class="custom-card summary-card">
+          <div class="card-body">
+            <h4 class="summary-title">Order Summary</h4>
+            <div class="summary-row">
+              <span class="text-muted">Subtotal ({{ cartItems.length }} items)</span>
+              <span>₹{{ cartTotal }}</span>
+            </div>
+            <div class="summary-row">
+              <span class="text-muted">Delivery Options</span>
+              <span class="text-success">Free Shipping</span>
+            </div>
+            <hr>
+            <div class="summary-total">
+              <span>Total</span>
+              <span class="total-amount">₹{{ cartTotal }}</span>
+            </div>
+            <button class="btn btn-primary w-100 btn-lg" routerLink="/customer/orders/place">Proceed to Checkout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

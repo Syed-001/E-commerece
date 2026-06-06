@@ -1,0 +1,32 @@
+<div class="page-container">
+  <h2 class="mb-4">Product Catalogue</h2>
+  
+  @if (errorMessage) { <div class="alert alert-danger">{{ errorMessage }}</div> }
+
+  @if (products.length === 0 && !errorMessage) {
+    <div class="alert alert-info empty-state">No products available right now. Admin needs to add some!</div>
+  }
+
+  <div class="row">
+    @for (product of products; track product.productId) {
+      <div class="col-md-4 mb-4">
+        <div class="custom-card product-card">
+          <img src="https://via.placeholder.com/300x200?text=E-Comm+Product" class="product-image" alt="Product Image">
+          <div class="product-info">
+            <h5 class="product-title">{{ product.name }}</h5>
+            <p class="product-desc">{{ product.description }}</p>
+            <h6 class="product-price">Price: ₹{{ product.price }}</h6>
+            <p class="product-stock">Available Quantity: {{ product.quantity }}</p>
+            
+            <button class="btn w-100" 
+                    [ngClass]="product.quantity === 0 ? 'btn-secondary' : 'btn-primary'"
+                    (click)="addToCart(product)" 
+                    [disabled]="product.quantity === 0">
+              @if (product.quantity === 0) { Out of Stock } @else { Add to Cart }
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

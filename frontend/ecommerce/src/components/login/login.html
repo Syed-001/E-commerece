@@ -1,0 +1,36 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h3 class="auth-title">Login</h3>
+
+    @if (loginMessage) {
+      <div class="alert" [ngClass]="loginSuccess ? 'alert-success' : 'alert-danger'">
+        {{ loginMessage }}
+      </div>
+    }
+
+    <form [formGroup]="loginForm" (ngSubmit)="doLogin()">
+
+      <div class="input-group-custom">
+        <label>Username</label>  
+        <input type="text" class="form-control" formControlName="username">  
+        @if (loginForm.get('username')?.touched && loginForm.get('username')?.invalid) {
+          <span class="error-text">Username is required.</span>
+        }
+      </div>
+
+      <div class="input-group-custom">
+        <label>Password</label>
+        <input type="password" class="form-control" formControlName="pass">
+        @if (loginForm.get('pass')?.touched && loginForm.get('pass')?.invalid) {
+          <span class="error-text">Password is required.</span>
+        }
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Don't have an account? <a routerLink="/register">Register here</a></p>
+    </div>
+  </div>
+</div>

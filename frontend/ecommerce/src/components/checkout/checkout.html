@@ -1,0 +1,38 @@
+<div class="page-container">
+  <div class="custom-card">
+    <div class="card-header-primary">
+      <h3>Review Your Order</h3>
+    </div>
+    
+    <div class="card-body-custom">
+      @if (successMessage) { <div class="alert alert-success">{{ successMessage }}</div> }
+      @if (errorMessage) { <div class="alert alert-danger">{{ errorMessage }}</div> }
+
+      <h5 class="section-title">Items in Your Cart</h5>
+      
+      <ul class="item-list">
+        @for (item of cartItems; track item.productId) {
+          <li class="item-row">
+            <div>
+              <h6 class="item-name">{{ item.productName }}</h6>
+              <small class="item-details">Qty: {{ item.quantity }} x ₹{{ item.price }}</small>
+            </div>
+            <span class="item-price">₹{{ item.price * item.quantity }}</span>
+          </li>
+        }
+      </ul>
+
+      <div class="total-section">
+        <h4>Total Amount:</h4>
+        <h4 class="total-price">₹{{ orderTotal }}</h4>
+      </div>
+
+      <div class="button-group">
+        <button class="btn btn-success btn-lg" (click)="confirmOrder()" [disabled]="cartItems.length === 0 || isProcessing">
+          @if (!isProcessing) { Confirm & Pay (Simulated) } @else { Processing Order... }
+        </button>
+        <button class="btn btn-outline-secondary" routerLink="/customer/cart" [disabled]="isProcessing">Back to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>

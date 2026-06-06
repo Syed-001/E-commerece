@@ -1,0 +1,80 @@
+.page-container {
+    margin: 2rem auto;
+    max-width: 800px;
+    padding: 0 15px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 20px;
+}
+
+.custom-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 25px;
+    overflow: hidden;
+    border: 1px solid #dee2e6;
+}
+
+.order-header {
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-details .label {
+    color: #6c757d;
+    margin-right: 5px;
+}
+
+.order-details .value {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.order-details .divider {
+    margin: 0 15px;
+    color: #ccc;
+}
+
+.order-total {
+    color: #0d6efd;
+    font-weight: bold;
+    margin: 0;
+}
+
+.item-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.item-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.item-row:last-child {
+    border-bottom: none;
+}
+
+.item-name {
+    margin: 0;
+    color: #333;
+}
+
+.item-qty {
+    color: #6c757d;
+}
+
+.item-qty span {
+    font-weight: bold;
+    color: #333;
+}
