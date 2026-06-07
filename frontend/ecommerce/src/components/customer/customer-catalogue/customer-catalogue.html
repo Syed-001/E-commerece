@@ -1,10 +1,10 @@
 <div class="page-container">
-  <h2 class="mb-4">Product Catalogue</h2>
+  <h2 class="mb-4">Products</h2>
   
   @if (errorMessage) { <div class="alert alert-danger">{{ errorMessage }}</div> }
 
   @if (products.length === 0 && !errorMessage) {
-    <div class="alert alert-info empty-state">No products available right now. Admin needs to add some!</div>
+    <div class="alert alert-info empty-state">No products available right now.</div>
   }
 
   <div class="row">
