@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, inject, PLATFORM_ID } from '@angular/core';
 import { AuthService } from '../../services/auth';
 import { Router, RouterLink } from '@angular/router';
 
@@ -10,27 +10,23 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './navbar.css',
 })
 export class Navbar {
+  private platformId = inject(PLATFORM_ID);
 
- constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   get isLoggedIn(): boolean {
+    if (!isPlatformBrowser(this.platformId)) return false;
     return this.authService.isLoggedIn();
   }
 
   get isAdmin(): boolean {
-    if (typeof sessionStorage !== 'undefined') {
-      const userType = sessionStorage.getItem('userType');
-      return userType === '0'; 
-    }
-    return false;
+    if (!isPlatformBrowser(this.platformId)) return false;
+    return sessionStorage.getItem('userType') === '0';
   }
 
   get isCustomer(): boolean {
-    if (typeof sessionStorage !== 'undefined') {
-      const userType = sessionStorage.getItem('userType');
-      return userType === '1'; 
-    }
-    return false;
+    if (!isPlatformBrowser(this.platformId)) return false;
+    return sessionStorage.getItem('userType') === '1';
   }
 
   logout() {

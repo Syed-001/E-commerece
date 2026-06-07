@@ -24,12 +24,11 @@ public class AppSecurity {
             .cors(cors -> cors.disable())           
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
                 .requestMatchers(
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
-                    "/actuator/**",
-                    "/product/all**",
-                    "/product/id**"
+                    "/actuator/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

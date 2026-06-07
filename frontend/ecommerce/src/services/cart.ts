@@ -27,7 +27,8 @@ export class CartService {
   }
 
   deleteCartItem(cartId: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/deleteProd/${cartId}`, { withCredentials: true });
+    return this.http.delete(`${this.baseUrl}/deleteProd/${cartId}`, { withCredentials: true,
+      responseType: 'text' });
   }
 
   updateCartCount(count: number) {

@@ -12,6 +12,7 @@ interface ProductApi {
   prodCat?: string;
   price: number;
   availableQty: number;
+  imageURL?: string;
 }
 
 @Injectable({
@@ -45,7 +46,8 @@ export class ProductService {
       name: api.prodName,
       description: api.prodDesc ?? '',
       price: api.price,
-      quantity: api.availableQty
+      quantity: api.availableQty,
+      imageUrl: api.imageURL
     };
   }
 }

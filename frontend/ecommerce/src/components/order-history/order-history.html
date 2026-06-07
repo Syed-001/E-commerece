@@ -18,7 +18,7 @@
           <span class="badge" 
                 [ngClass]="{
                   'bg-warning text-dark': order.orderStatus === 'PENDING', 
-                  'bg-success': order.orderStatus === 'COMPLETED',
+                  'bg-success': order.orderStatus === 'CONFIRMED',
                   'bg-primary': order.orderStatus === 'PROCESSING',
                   'bg-danger': order.orderStatus === 'CANCELLED'
                 }">

@@ -73,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         order.setTotalAmount(calculatedTotal);
-        order.setOrderStatus("PENDING");
+        order.setOrderStatus("CONFIRMED");
         order.setOrderDate(LocalDateTime.now());
         Order savedOrder = orderRepository.save(order);
 

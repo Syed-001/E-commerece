@@ -11,7 +11,7 @@
     @for (product of products; track product.productId) {
       <div class="col-md-4 mb-4">
         <div class="custom-card product-card">
-          <img src="https://via.placeholder.com/300x200?text=E-Comm+Product" class="product-image" alt="Product Image">
+          <img [src]="product.imageUrl || 'https://placehold.co/300x200?text=E-Comm+Product'" class="product-image" alt="Product Image">
           <div class="product-info">
             <h5 class="product-title">{{ product.name }}</h5>
             <p class="product-desc">{{ product.description }}</p>

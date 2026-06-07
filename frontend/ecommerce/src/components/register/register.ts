@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth'; 
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-register',
@@ -17,7 +17,7 @@ export class Register {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,  
+    private authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {
@@ -34,19 +34,19 @@ export class Register {
     if (this.registerForm.valid) {
       this.authService.register({
         id: 0,
-        username: this.registerForm.get('fullname')?.value,  
-        password: this.registerForm.get('pass')?.value,     
-        email: this.registerForm.get('email')?.value,        
-        address: '',                                         
-        userType: 1                                     
+        username: this.registerForm.get('fullname')?.value,
+        password: this.registerForm.get('pass')?.value,
+        email: this.registerForm.get('email')?.value,
+        address: '',
+        userType: 1
       }).subscribe({
-        next: (res) => {
+        next: () => {
           this.successMessage = 'Registration successful! Redirecting to login...';
           this.errorMessage = '';
           this.cdr.detectChanges();
           setTimeout(() => this.router.navigate(['/login']), 2000);
         },
-        error: (err) => {
+        error: () => {
           this.errorMessage = 'Registration failed. Please try again.';
           this.successMessage = '';
           this.cdr.detectChanges();

@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef, inject, PLATFORM_ID } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart';
 import { OrderService } from '../../services/order';
@@ -19,17 +19,19 @@ export class Checkout implements OnInit {
   errorMessage: string = '';
   successMessage: string = '';
   isProcessing: boolean = false;
+  private platformId = inject(PLATFORM_ID);
 
   constructor(
     private cartService: CartService,
     private orderService: OrderService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    if (typeof sessionStorage !== 'undefined') {
-      this.userId = sessionStorage.getItem('userId') || '';
-    }
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    this.userId = sessionStorage.getItem('userId') || '';
 
     if (!this.userId) {
       this.router.navigate(['/login']);
@@ -40,8 +42,12 @@ export class Checkout implements OnInit {
       next: (items) => {
         this.cartItems = items;
         this.orderTotal = this.cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+        this.cdr.detectChanges();
       },
-      error: () => this.errorMessage = 'Could not load cart for checkout.'
+      error: () => {
+        this.errorMessage = 'Could not load cart for checkout.';
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -55,11 +61,13 @@ export class Checkout implements OnInit {
       next: () => {
         this.successMessage = 'Order placed successfully!';
         this.cartService.updateCartCount(0);
+        this.cdr.detectChanges();
         setTimeout(() => this.router.navigate(['/customer/orders']), 2000);
       },
       error: () => {
         this.errorMessage = 'Failed to place order. Please try again.';
         this.isProcessing = false;
+        this.cdr.detectChanges();
       }
     });
   }
