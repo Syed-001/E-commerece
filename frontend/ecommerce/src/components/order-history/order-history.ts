@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { OrderService } from '../../services/order';
 import { Order } from '../../interfaces/IOrder';
@@ -14,8 +14,8 @@ import { ChangeDetectorRef } from '@angular/core';
 export class OrderHistory implements OnInit {
   orders: Order[] = [];
   errorMessage: string = '';
-  userId: string = '';
-  private platformId = inject(PLATFORM_ID);
+  
+  userId: string = ''; 
 
   constructor(
     private orderService: OrderService,
@@ -24,9 +24,10 @@ export class OrderHistory implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
 
-    this.userId = sessionStorage.getItem('userId') || '';
+    if (typeof sessionStorage !== 'undefined') {
+      this.userId = sessionStorage.getItem('userId') || '';
+    }
 
     if (!this.userId) {
       this.router.navigate(['/login']);
@@ -40,11 +41,11 @@ export class OrderHistory implements OnInit {
       next: (data) => {
         this.orders = data.sort((a, b) => (b.orderId || 0) - (a.orderId || 0));
         this.cdr.detectChanges();
-        
       },
       error: (err) => {
         console.error(err);
         this.errorMessage = 'Failed to load order history.';
+        this.cdr.detectChanges();
       }
     });
   }
@@ -54,7 +55,10 @@ export class OrderHistory implements OnInit {
 
     this.orderService.cancelOrder(orderId).subscribe({
       next: () => this.loadOrders(),
-      error: () => this.errorMessage = 'Failed to cancel order.'
+      error: () => {
+        this.errorMessage = 'Failed to cancel order.';
+        this.cdr.detectChanges();
+      }
     });
   }
 }

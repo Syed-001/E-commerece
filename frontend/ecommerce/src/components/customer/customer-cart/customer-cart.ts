@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ChangeDetectorRef, inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartItem } from '../../../interfaces/ICart';
 import { CartService } from '../../../services/cart';
@@ -16,15 +15,14 @@ export class CustomerCart implements OnInit {
   cartTotal: number = 0;
   userId: string = '';
   cartItems: CartItem[] = [];
-  private platformId = inject(PLATFORM_ID);
 
   constructor(private cartService: CartService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (typeof sessionStorage !== 'undefined') {
       this.userId = sessionStorage.getItem('userId') || '';
-      this.loadCart();
     }
+    this.loadCart();
   }
 
   loadCart() {

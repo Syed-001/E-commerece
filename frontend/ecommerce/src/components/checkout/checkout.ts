@@ -1,5 +1,5 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, OnInit, ChangeDetectorRef, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart';
 import { OrderService } from '../../services/order';
@@ -19,7 +19,6 @@ export class Checkout implements OnInit {
   errorMessage: string = '';
   successMessage: string = '';
   isProcessing: boolean = false;
-  private platformId = inject(PLATFORM_ID);
 
   constructor(
     private cartService: CartService,
@@ -29,9 +28,9 @@ export class Checkout implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    this.userId = sessionStorage.getItem('userId') || '';
+    if (typeof sessionStorage !== 'undefined') {
+      this.userId = sessionStorage.getItem('userId') || '';
+    }
 
     if (!this.userId) {
       this.router.navigate(['/login']);

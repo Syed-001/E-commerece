@@ -1,5 +1,4 @@
-import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -16,7 +15,6 @@ export class Login {
   loginForm: FormGroup;
   loginSuccess: boolean = false;
   loginMessage: string = '';
-  private platformId = inject(PLATFORM_ID);
 
   constructor(
     private fb: FormBuilder,

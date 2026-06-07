@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Product } from '../../../interfaces/IProduct';
 import { ProductService } from '../../../services/product';
 import { CartService } from '../../../services/cart';
-import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-customer-catalogue',
@@ -15,18 +13,14 @@ import { ChangeDetectorRef } from '@angular/core';
 export class CustomerCatalogue implements OnInit {
   products: Product[] = [];
   errorMessage: string = '';
-  private platformId = inject(PLATFORM_ID);
 
   constructor(
     private productService: ProductService,
     private cartService: CartService,
-    private cdr: ChangeDetectorRef
-  ) { }
+    private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.loadProducts();
-    }
+    this.loadProducts();
   }
 
   loadProducts() {
@@ -43,10 +37,13 @@ export class CustomerCatalogue implements OnInit {
   }
 
   addToCart(product: Product) {
-    const currentUserId = sessionStorage.getItem('userId') || '';
+    let currentUserId = '';
+    if (typeof sessionStorage !== 'undefined') {
+      currentUserId = sessionStorage.getItem('userId') || '';
+    }
 
     if (!currentUserId) {
-      alert('Please login to add items to your cart.');
+      alert("Please login to add items to your cart.");
       return;
     }
 
@@ -59,6 +56,7 @@ export class CustomerCatalogue implements OnInit {
     this.cartService.addToCart(request).subscribe({
       next: () => {
         alert(`${product.name} successfully added to your cart!`);
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);
