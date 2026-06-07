@@ -28,7 +28,8 @@ public class AppSecurity {
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/actuator/**",
-                    "/product/id/**"
+                    "/product/all**",
+                    "/product/id**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

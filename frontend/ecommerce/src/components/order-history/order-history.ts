@@ -41,8 +41,17 @@ export class OrderHistory implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        this.errorMessage = "Failed to load order history.";
+        this.errorMessage = 'Failed to load order history.';
       }
+    });
+  }
+
+  cancelOrder(orderId: number | undefined) {
+    if (!orderId || !confirm('Cancel this order?')) return;
+
+    this.orderService.cancelOrder(orderId).subscribe({
+      next: () => this.loadOrders(),
+      error: () => this.errorMessage = 'Failed to cancel order.'
     });
   }
 }

@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+
 import com.wipro.productservice.util.JwtUtil; 
 
 import jakarta.servlet.FilterChain;
@@ -54,7 +55,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+      if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             
             boolean valid = jwtUtil.validateToken(token);
 

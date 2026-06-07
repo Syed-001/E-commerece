@@ -13,7 +13,6 @@ import { CartService } from '../../../services/cart';
 export class CustomerCart implements OnInit {
 
   cartTotal: number = 0;
-
   userId: string = '';
   cartItems: CartItem[] = [];
 
@@ -31,8 +30,6 @@ export class CustomerCart implements OnInit {
       next: (items) => {
         this.cartItems = items;
         this.calculateTotal();
-
-
         this.cartService.updateCartCount(this.cartItems.length);
       },
       error: (err) => console.error('Error loading cart', err)
@@ -42,7 +39,6 @@ export class CustomerCart implements OnInit {
   calculateTotal() {
     this.cartTotal = this.cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   }
-
 
   updateQuantity(item: CartItem, newQuantity: number) {
     if (newQuantity < 1) return;
@@ -55,15 +51,15 @@ export class CustomerCart implements OnInit {
 
     this.cartService.updateCartItem(request).subscribe({
       next: () => this.loadCart(),
-      error: (err) => console.error('Error updating quantity', err)
+      error: (err) => alert('Failed to update quantity')
     });
   }
 
   removeItem(cartId: number) {
-    if (confirm('Are you sure you want to remove this item?')) {
+    if (confirm('Remove this item from your cart?')) {
       this.cartService.deleteCartItem(cartId).subscribe({
         next: () => this.loadCart(),
-        error: (err) => console.error('Error removing item', err)
+        error: (err) => alert('Failed to remove item')
       });
     }
   }

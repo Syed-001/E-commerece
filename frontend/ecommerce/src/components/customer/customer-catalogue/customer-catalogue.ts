@@ -5,7 +5,6 @@ import { ProductService } from '../../../services/product';
 import { CartService } from '../../../services/cart';
 
 
-
 @Component({
   selector: 'app-customer-catalogue',
   imports: [CommonModule],

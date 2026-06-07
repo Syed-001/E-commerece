@@ -36,6 +36,7 @@ public class ProductServiceImpl implements ProductService {
     public Product updateProduct(int id, Product product) {
         Product existing = getProductById(id);
         existing.setProdName(product.getProdName());
+        existing.setProdDesc(product.getProdDesc());
         existing.setPrice(product.getPrice());
         existing.setAvailableQty(product.getAvailableQty());
         return repo.save(existing);
@@ -85,19 +86,6 @@ public class ProductServiceImpl implements ProductService {
             System.err.println("Inventory deduction failed: " + e.getMessage());
             // SAGA ROLLBACK: Tell Order Service to cancel the order!
             kafkaTemplate.send("inventory-failed-topic", event);
-        }
-    }
-
-    @KafkaListener(topics = "payment-failed-topic", groupId = "product-group")
-    public void handlePaymentFailure(OrderEventDto event) {
-        System.out.println("Restoring inventory for Order ID: " + event.getOrderId());
-        
-        for (OrderItemDto item : event.getItems()) {
-            Product product = repo.findById(item.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
-            
-            product.setAvailableQty(product.getAvailableQty() + item.getQuantity());
-            repo.save(product);
         }
     }
 }

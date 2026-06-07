@@ -4,7 +4,6 @@ import { Router, RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart';
 import { OrderService } from '../../services/order';
 import { CartItem } from '../../interfaces/ICart';
-import { Order, OrderItem } from '../../interfaces/IOrder'; 
 
 @Component({
   selector: 'app-checkout',
@@ -12,13 +11,14 @@ import { Order, OrderItem } from '../../interfaces/IOrder';
   templateUrl: './checkout.html',
   styleUrl: './checkout.css',
 })
-export class Checkout implements OnInit { 
+export class Checkout implements OnInit {
+
   cartItems: CartItem[] = [];
   orderTotal: number = 0;
-  isProcessing: boolean = false;
-  successMessage: string = '';
+  userId: string = '';
   errorMessage: string = '';
-  userId: string = ''; 
+  successMessage: string = '';
+  isProcessing: boolean = false;
 
   constructor(
     private cartService: CartService,
@@ -28,25 +28,20 @@ export class Checkout implements OnInit {
 
   ngOnInit(): void {
     if (typeof sessionStorage !== 'undefined') {
-      this.userId = sessionStorage.getItem('userId') || ''; 
+      this.userId = sessionStorage.getItem('userId') || '';
     }
 
-  
     if (!this.userId) {
       this.router.navigate(['/login']);
       return;
     }
-    
-    this.loadCheckoutData(); 
-  }
 
-  loadCheckoutData() {
     this.cartService.getCartByUserId(this.userId).subscribe({
       next: (items) => {
         this.cartItems = items;
         this.orderTotal = this.cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
       },
-      error: (err) => this.errorMessage = "Could not load cart for checkout."
+      error: () => this.errorMessage = 'Could not load cart for checkout.'
     });
   }
 
@@ -54,34 +49,16 @@ export class Checkout implements OnInit {
     if (this.cartItems.length === 0) return;
 
     this.isProcessing = true;
+    this.errorMessage = '';
 
-    const orderItems: OrderItem[] = this.cartItems.map(item => ({
-      productId: item.productId,
-      quantity: item.quantity,
-      productName: item.productName,
-      price: item.price
-    }));
-
-    const newOrder: Order = {
-      userId: this.userId,
-      totalAmount: this.orderTotal,
-      items: orderItems, 
-      orderStatus: 'PENDING'
-    };
-
-    this.orderService.placeOrder(newOrder).subscribe({
-      next: (res) => {
-        this.successMessage = "Order placed successfully!";
-        this.isProcessing = false;
-        
-        this.cartItems.forEach(item => this.cartService.deleteCartItem(item.cartId).subscribe());
-        this.cartService.updateCartCount(0); 
-
-        setTimeout(() => this.router.navigate(['/customer/catalogue']), 3000);
+    this.orderService.createOrder(this.userId).subscribe({
+      next: () => {
+        this.successMessage = 'Order placed successfully!';
+        this.cartService.updateCartCount(0);
+        setTimeout(() => this.router.navigate(['/customer/orders']), 2000);
       },
-      error: (err) => {
-        console.error(err);
-        this.errorMessage = "Order failed. Please try again.";
+      error: () => {
+        this.errorMessage = 'Failed to place order. Please try again.';
         this.isProcessing = false;
       }
     });

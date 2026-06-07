@@ -64,6 +64,18 @@ public class ProductController {
         return ResponseEntity.ok(service.getProductById(id));
     }
 
+    @Operation(summary = "Update a product", description = "Updates an existing product in inventory.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product successfully updated"),
+            @ApiResponse(responseCode = "404", description = "Product not found")
+    })
+    @PutMapping("/id/{id}")
+    public ResponseEntity<Product> updateProduct(
+            @PathVariable int id,
+            @Valid @RequestBody Product product) {
+        return ResponseEntity.ok(service.updateProduct(id, product));
+    }
+
     @Operation(summary = "Delete a product", description = "Removes a product from the database.")
     @ApiResponse(responseCode = "200", description = "Product successfully deleted")
     @DeleteMapping("/delete/{id}")

@@ -4,13 +4,12 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { CartItem, CartRequest } from '../interfaces/ICart';
 import { BASE_URL } from '../utils/appconstants';
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  baseUrl: string = BASE_URL + "/cart"; 
-  
+  baseUrl: string = BASE_URL + '/cart';
+
   public cartItemCount = new BehaviorSubject<number>(0);
 
   constructor(private http: HttpClient) { }

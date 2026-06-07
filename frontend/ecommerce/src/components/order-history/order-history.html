@@ -19,12 +19,18 @@
                 [ngClass]="{
                   'bg-warning text-dark': order.orderStatus === 'PENDING', 
                   'bg-success': order.orderStatus === 'COMPLETED',
-                  'bg-primary': order.orderStatus === 'PROCESSING'
+                  'bg-primary': order.orderStatus === 'PROCESSING',
+                  'bg-danger': order.orderStatus === 'CANCELLED'
                 }">
             {{ order.orderStatus }}
           </span>
         </div>
-        <h4 class="order-total">₹{{ order.totalAmount }}</h4>
+        <div class="d-flex align-items-center gap-3">
+          <h4 class="order-total mb-0">₹{{ order.totalAmount }}</h4>
+          @if (order.orderStatus === 'PENDING') {
+            <button class="btn btn-sm btn-outline-danger" (click)="cancelOrder(order.orderId)">Cancel</button>
+          }
+        </div>
       </div>
 
       <ul class="item-list">

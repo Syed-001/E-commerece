@@ -23,5 +23,4 @@ public class Product {
     private String uom;
     private double prodRating;
     private String imageURL;
-    private LocalDate dateOfManufacture;
 }

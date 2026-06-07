@@ -6,24 +6,22 @@
       Your cart is empty. <a routerLink="/customer/catalogue">Continue shopping</a>.
     </div>
   } @else {
-    <div class="row mt-4">
+    <div class="row">
       <div class="col-lg-8">
         @for (item of cartItems; track item.cartId) {
           <div class="custom-card mb-3">
             <div class="cart-item-body">
               <div>
-                <h5>{{ item.productName }}</h5>
-                <p class="text-muted">Price: ₹{{ item.price }}</p>
+                <h5 class="mb-1">{{ item.productName }}</h5>
+                <p class="text-muted mb-0">₹{{ item.price }} each</p>
               </div>
-              
-              <div class="quantity-controls">
-                <button class="btn btn-sm btn-light" (click)="updateQuantity(item, item.quantity - 1)">-</button>
-                <span class="quantity-number">{{ item.quantity }}</span>
-                <button class="btn btn-sm btn-light" (click)="updateQuantity(item, item.quantity + 1)">+</button>
+              <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-sm btn-outline-secondary" (click)="updateQuantity(item, item.quantity - 1)">-</button>
+                <span>{{ item.quantity }}</span>
+                <button class="btn btn-sm btn-outline-secondary" (click)="updateQuantity(item, item.quantity + 1)">+</button>
               </div>
-
-              <div class="item-actions">
-                <h6 class="item-subtotal">₹{{ item.price * item.quantity }}</h6>
+              <div class="text-end">
+                <p class="fw-bold mb-1">₹{{ item.price * item.quantity }}</p>
                 <button class="btn btn-sm btn-danger mt-1" (click)="removeItem(item.cartId)">Remove</button>
               </div>
             </div>
@@ -32,24 +30,17 @@
       </div>
 
       <div class="col-lg-4">
-        <div class="custom-card summary-card">
-          <div class="card-body">
-            <h4 class="summary-title">Order Summary</h4>
-            <div class="summary-row">
-              <span class="text-muted">Subtotal ({{ cartItems.length }} items)</span>
-              <span>₹{{ cartTotal }}</span>
-            </div>
-            <div class="summary-row">
-              <span class="text-muted">Delivery Options</span>
-              <span class="text-success">Free Shipping</span>
-            </div>
-            <hr>
-            <div class="summary-total">
-              <span>Total</span>
-              <span class="total-amount">₹{{ cartTotal }}</span>
-            </div>
-            <button class="btn btn-primary w-100 btn-lg" routerLink="/customer/orders/place">Proceed to Checkout</button>
+        <div class="custom-card p-3">
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">Subtotal ({{ cartItems.length }} items)</span>
+            <span>₹{{ cartTotal }}</span>
           </div>
+          <hr>
+          <div class="d-flex justify-content-between mb-3">
+            <span class="fw-bold">Total</span>
+            <span class="total-amount">₹{{ cartTotal }}</span>
+          </div>
+          <a class="btn btn-success w-100" routerLink="/customer/orders/place">Proceed to Checkout</a>
         </div>
       </div>
     </div>

@@ -1,38 +1,40 @@
 <div class="page-container">
-  <div class="custom-card">
-    <div class="card-header-primary">
-      <h3>Review Your Order</h3>
-    </div>
-    
-    <div class="card-body-custom">
-      @if (successMessage) { <div class="alert alert-success">{{ successMessage }}</div> }
-      @if (errorMessage) { <div class="alert alert-danger">{{ errorMessage }}</div> }
+  <h2 class="mb-4">Checkout</h2>
 
+  @if (errorMessage) { <div class="alert alert-danger">{{ errorMessage }}</div> }
+  @if (successMessage) { <div class="alert alert-success">{{ successMessage }}</div> }
+
+  <div class="custom-card p-4">
+  @if (cartItems.length > 0) {
+    <div class="checkout-section">
       <h5 class="section-title">Items in Your Cart</h5>
-      
-      <ul class="item-list">
+
+      <ul class="list-group mb-4">
         @for (item of cartItems; track item.productId) {
-          <li class="item-row">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
             <div>
-              <h6 class="item-name">{{ item.productName }}</h6>
-              <small class="item-details">Qty: {{ item.quantity }} x ₹{{ item.price }}</small>
+              <strong>{{ item.productName }}</strong>
+              <div class="text-muted small">Qty: {{ item.quantity }} × ₹{{ item.price }}</div>
             </div>
-            <span class="item-price">₹{{ item.price * item.quantity }}</span>
+            <span>₹{{ item.price * item.quantity }}</span>
           </li>
         }
       </ul>
 
-      <div class="total-section">
-        <h4>Total Amount:</h4>
-        <h4 class="total-price">₹{{ orderTotal }}</h4>
+      <div class="d-flex justify-content-between mb-4">
+        <span class="fw-bold">Order Total</span>
+        <span class="fw-bold text-success">₹{{ orderTotal }}</span>
       </div>
 
-      <div class="button-group">
+      <div class="d-grid gap-2">
         <button class="btn btn-success btn-lg" (click)="confirmOrder()" [disabled]="cartItems.length === 0 || isProcessing">
-          @if (!isProcessing) { Confirm & Pay (Simulated) } @else { Processing Order... }
+          @if (isProcessing) { Processing... } @else { Confirm Order }
         </button>
         <button class="btn btn-outline-secondary" routerLink="/customer/cart" [disabled]="isProcessing">Back to Cart</button>
       </div>
     </div>
+  } @else if (!errorMessage) {
+    <div class="alert alert-info">Your cart is empty.</div>
+  }
   </div>
 </div>
