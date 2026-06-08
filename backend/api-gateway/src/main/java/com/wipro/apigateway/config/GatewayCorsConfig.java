@@ -21,6 +21,7 @@ public class GatewayCorsConfig {
         config.setAllowedOriginPatterns(List.of("http://localhost:4200"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
+        //Tells the browser to remember (cache) this "Yes, you are allowed" answer for 3600 seconds (1 hour).
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
