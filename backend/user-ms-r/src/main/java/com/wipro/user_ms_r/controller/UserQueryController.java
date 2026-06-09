@@ -22,7 +22,7 @@ public class UserQueryController {
         return ResponseEntity.ok(queryService.getUserById(id));
     }
 
-    @GetMapping("/all")
+    @GetMapping
     @Operation(summary = "Get All Users")
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(queryService.getAllUsers());

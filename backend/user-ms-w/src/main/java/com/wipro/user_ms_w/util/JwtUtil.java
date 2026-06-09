@@ -15,7 +15,7 @@ public class JwtUtil {
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
     private final long expiration = 1000 * 60 * 60 * 10; // 10 hours
 
-    // 1. Generates the token during Login
+    //Generates the token during Login
     public String generateToken(String username, int userType) {
         return Jwts.builder()
                 .setSubject(username)
@@ -26,7 +26,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    // 2. Extracts the data (Claims) from the token (Solves your first error)
+    //Extracts the data (Claims) from the token 
     public Claims extractClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -35,7 +35,7 @@ public class JwtUtil {
                 .getBody();
     }
 
-    // 3. Validates the token to ensure it isn't tampered with or expired
+    //Validates the token to ensure it isn't tampered with or expired
     public boolean validateToken(String token) {
         try {
             extractClaims(token);

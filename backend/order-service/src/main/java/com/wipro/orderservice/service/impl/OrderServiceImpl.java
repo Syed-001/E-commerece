@@ -1,5 +1,6 @@
 package com.wipro.orderservice.service.impl;
 
+
 import com.wipro.orderservice.client.ProductClient;
 import com.wipro.orderservice.dto.OrderEventDto;
 import com.wipro.orderservice.dto.OrderItemDto;
@@ -16,8 +17,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,11 +44,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Order createOrderFromCart(String userId) {
+
         if (userId == null || userId.isBlank()) {
+
             throw new RuntimeException("userId is required");
         }
 
         List<CartItem> cartItems = cartRepository.findByUserId(userId);
+
         if (cartItems.isEmpty()) {
             throw new RuntimeException("Cart is empty for user: " + userId);
         }
@@ -58,8 +62,12 @@ public class OrderServiceImpl implements OrderService {
 
         double calculatedTotal = 0.0;
         for (CartItem cartItem : cartItems) {
+        // Synchronous call via OpenFeign to fetch current product details and stock
+
             ProductDto product = productClient.getProductById(cartItem.getProductId());
+            // Check if requested quantity exceeds available stock (Business Invariant)
             if (product.getAvailableQty() < cartItem.getQuantity()) {
+
                 throw new RuntimeException("Insufficient stock for Product ID: " + cartItem.getProductId());
             }
 
@@ -75,6 +83,7 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalAmount(calculatedTotal);
         order.setOrderStatus("PENDING");
         order.setOrderDate(LocalDateTime.now());
+
         Order savedOrder = orderRepository.save(order);
 
         List<OrderItemDto> itemDtos = savedOrder.getItems().stream()
@@ -90,9 +99,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Order cancelOrder(int orderId) {
+
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + orderId));
-
         if ("CANCELLED".equalsIgnoreCase(order.getOrderStatus())) {
             throw new RuntimeException("Order is already cancelled");
         }
@@ -103,19 +112,26 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getAllOrders() {
+
         return orderRepository.findAllByOrderByOrderDateDesc();
     }
 
     @Override
+
     public List<Order> getOrdersByUserId(String userId) {
+
         return orderRepository.findByUserIdOrderByOrderDateDesc(userId);
+
     }
 
     @Override
     public Order getOrderById(int orderId) {
+
         return orderRepository.findById(orderId)
+
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + orderId));
     }
+
 
     @KafkaListener(topics = "inventory-failed-topic", groupId = "order-group")
     public void handleInventoryFailureCompensation(OrderEventDto event) {
@@ -124,5 +140,7 @@ public class OrderServiceImpl implements OrderService {
 
         order.setOrderStatus("CANCELLED");
         orderRepository.save(order);
+
     }
 }
+

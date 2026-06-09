@@ -34,23 +34,23 @@ public class UserCommandController {
             @RequestBody LoginReq req,
             HttpServletResponse response) { 
 
-        // 1. Get the response from your service
+        //Get the response from service
         AuthApiResponse apiResponse = commandService.loginUser(req);
 
-        // 2. Check if login was successful and a token was generated
+        //Check if login was successful and a token was generated
         if (apiResponse.getToken() != null && !apiResponse.getToken().isEmpty()) {
             
-            // 3. Create the HttpOnly Cookie EXACTLY like your reference
+            //Create the HttpOnly Cookie EXACTLY like reference
             Cookie cookie = new Cookie("jwt", apiResponse.getToken());
             cookie.setHttpOnly(true);
             cookie.setSecure(false); // Change to true if using HTTPS in production
             cookie.setPath("/");
             cookie.setMaxAge(10 * 60 * 60); // 10 hours (matching your JwtUtil expiration)
 
-            // 4. Add the cookie to the HTTP response
+            //Add the cookie to the HTTP response
             response.addCookie(cookie);
 
-            // 5. IMPORTANT: Remove token from the JSON body so it ONLY lives securely in the cookie
+            //Remove token from the JSON body so it ONLY lives securely in the cookie
             apiResponse.setToken(null);
         } else {
             apiResponse.setMessage("Login Failed");
