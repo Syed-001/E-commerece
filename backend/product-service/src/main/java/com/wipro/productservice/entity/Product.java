@@ -2,7 +2,7 @@ package com.wipro.productservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDate;
+
 
 @Entity
 @Table(name = "products")

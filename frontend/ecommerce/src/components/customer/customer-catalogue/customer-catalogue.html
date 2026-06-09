@@ -1,28 +1,76 @@
 <div class="page-container">
-  <h2 class="mb-4">Products</h2>
-  
-  @if (errorMessage) { <div class="alert alert-danger">{{ errorMessage }}</div> }
+  <h2 class="mb-3">Products</h2>
 
-  @if (products.length === 0 && !errorMessage) {
+  <!-- Search & Filter Bar -->
+  <div class="filters-row mb-4">
+    <div class="search-input position-relative">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        class="form-control ps-5"
+        placeholder="Search by name, category, brand, description..."
+        [value]="searchTerm"
+        (input)="onSearch($event)"
+      />
+      @if (searchTerm) {
+        <button class="btn btn-link search-clear" (click)="clearSearch()" title="Clear search">✕</button>
+      }
+    </div>
+    <div class="category-select">
+      <select class="form-select" (change)="onCategoryFilter($event)" [value]="selectedCategory">
+        <option value="">All Categories</option>
+        @for (cat of categories; track cat) {
+          <option [value]="cat">{{ cat }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  @if (errorMessage) {
+    <div class="alert alert-danger">{{ errorMessage }}</div>
+  }
+
+  @if (!errorMessage && filteredProducts.length === 0 && products.length === 0) {
     <div class="alert alert-info empty-state">No products available right now.</div>
   }
 
+  @if (!errorMessage && filteredProducts.length === 0 && products.length > 0) {
+    <div class="alert alert-warning empty-state">
+      No products found for "<strong>{{ searchTerm || selectedCategory }}</strong>".
+      <button class="btn btn-link p-0 ms-2" (click)="clearSearch()">Clear search</button>
+    </div>
+  }
+
   <div class="row">
-    @for (product of products; track product.productId) {
+    @for (product of filteredProducts; track product.productId) {
       <div class="col-md-4 mb-4">
         <div class="custom-card product-card">
           <img [src]="product.imageUrl || 'https://placehold.co/300x200?text=E-Comm+Product'" class="product-image" alt="Product Image">
           <div class="product-info">
+            @if (product.category) {
+              <span class="product-category badge bg-secondary mb-1">{{ product.category }}</span>
+            }
             <h5 class="product-title">{{ product.name }}</h5>
+            @if (product.make) {
+              <p class="product-make text-muted mb-1"><small>Brand: {{ product.make }}</small></p>
+            }
             <p class="product-desc">{{ product.description }}</p>
-            <h6 class="product-price">Price: ₹{{ product.price }}</h6>
+            <h6 class="product-price">Price: ₹{{ product.price | number:'1.2-2' }}</h6>
             <p class="product-stock">Available Quantity: {{ product.quantity }}</p>
-            
-            <button class="btn w-100" 
-                    [ngClass]="product.quantity === 0 ? 'btn-secondary' : 'btn-primary'"
-                    (click)="addToCart(product)" 
-                    [disabled]="product.quantity === 0">
-              @if (product.quantity === 0) { Out of Stock } @else { Add to Cart }
+
+            <button
+              class="btn w-100"
+              [ngClass]="product.quantity === 0 ? 'btn-secondary' : 'btn-primary'"
+              (click)="addToCart(product)"
+              [disabled]="product.quantity === 0 || addingProductId === product.productId"
+            >
+              @if (addingProductId === product.productId) {
+                <span class="spinner-border spinner-border-sm me-1" role="status"></span> Adding...
+              } @else if (product.quantity === 0) {
+                Out of Stock
+              } @else {
+                Add to Cart
+              }
             </button>
           </div>
         </div>

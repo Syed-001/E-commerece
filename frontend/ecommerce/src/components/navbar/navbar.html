@@ -1,9 +1,9 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
     <a class="navbar-brand" routerLink="/">MicroShop</a>
-    
+
     <div class="collapse navbar-collapse" id="navbarNav">
-      
+
       @if (isLoggedIn && isAdmin) {
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
@@ -16,9 +16,6 @@
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <a class="nav-link" routerLink="/customer/catalogue">Catalogue</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/customer/cart">My Cart</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" routerLink="/customer/orders">Order History</a>
@@ -44,3 +41,12 @@
     </div>
   </div>
 </nav>
+
+@if (isLoggedIn && isCustomer) {
+  <a routerLink="/customer/cart" class="floating-cart" aria-label="View Cart">
+    <span class="cart-emoji">🛒</span>
+    @if (cartCount > 0) {
+      <span class="cart-badge">{{ cartCount > 99 ? '99+' : cartCount }}</span>
+    }
+  </a>
+}
