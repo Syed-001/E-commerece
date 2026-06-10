@@ -139,6 +139,7 @@ export class AdminProducts implements OnInit {
 
     this.isSubmitting = true;
     this.errorMessage = '';
+    this.cdr.detectChanges();
 
     const formValue = this.productForm.value;
     const apiRequest = this.productService.toApiRequest({
