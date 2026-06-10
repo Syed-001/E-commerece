@@ -42,11 +42,4 @@
   </div>
 </nav>
 
-@if (isLoggedIn && isCustomer) {
-  <a routerLink="/customer/cart" class="floating-cart" aria-label="View Cart">
-    <span class="cart-emoji">🛒</span>
-    @if (cartCount > 0) {
-      <span class="cart-badge">{{ cartCount > 99 ? '99+' : cartCount }}</span>
-    }
-  </a>
-}
+

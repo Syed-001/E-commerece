@@ -1,5 +1,17 @@
 <app-navbar></app-navbar>
 
+@if (isCustomer) {
+  <div class="cart-bar">
+    <a routerLink="/customer/cart" class="cart-bar-btn" aria-label="View Cart">
+      <span class="cart-bar-icon">🛒</span>
+      <span class="cart-bar-label">My Cart</span>
+      @if (cartCount > 0) {
+        <span class="cart-bar-badge">{{ cartCount > 99 ? '99+' : cartCount }}</span>
+      }
+    </a>
+  </div>
+}
+
 <div class="container mt-4 pb-4">
   <router-outlet></router-outlet>
 </div>
